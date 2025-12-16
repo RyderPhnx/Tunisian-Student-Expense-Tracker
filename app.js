@@ -1,7 +1,6 @@
 // Transaction data - STARTING EMPTY (0 TND)
 let transactions = [];
 
-// DOM Elements
 const descriptionInput = document.getElementById('description');
 const amountInput = document.getElementById('amount');
 const categorySelect = document.getElementById('category');
@@ -12,15 +11,12 @@ const transactionsList = document.getElementById('transactions-list');
 const categoryList = document.getElementById('category-list');
 const incomeExpenseChart = document.getElementById('income-expense-chart');
 
-// Update summary cards
 const totalBalanceEl = document.getElementById('total-balance');
 const totalIncomeEl = document.getElementById('total-income');
 const totalExpenseEl = document.getElementById('total-expense');
 
-// Transaction type (income/expense)
 let transactionType = 'expense';
 
-// Set active type button
 function setActiveType(type) {
     transactionType = type;
     
@@ -33,12 +29,10 @@ function setActiveType(type) {
     }
 }
 
-// Format amount to TND with 3 decimal places
 function formatAmount(amount) {
     return amount.toFixed(3) + ' <span class="tnd">TND</span>';
 }
 
-// Calculate and update summary
 function updateSummary() {
     let totalIncome = 0;
     let totalExpense = 0;
@@ -58,7 +52,6 @@ function updateSummary() {
     totalExpenseEl.innerHTML = formatAmount(totalExpense);
 }
 
-// Get category icon and color
 function getCategoryInfo(category) {
     const categories = {
         food: { icon: 'fas fa-utensils', color: '#e74c3c', name: 'Food & Drinks' },
@@ -74,7 +67,6 @@ function getCategoryInfo(category) {
     return categories[category] || categories.other;
 }
 
-// Render transactions list
 function renderTransactions() {
     if (transactions.length === 0) {
         transactionsList.innerHTML = `
@@ -86,7 +78,6 @@ function renderTransactions() {
         return;
     }
     
-    // Sort transactions by date (newest first)
     const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
     
     transactionsList.innerHTML = sortedTransactions.map(transaction => {
@@ -94,7 +85,6 @@ function renderTransactions() {
         const typeClass = transaction.type === 'income' ? 'income' : 'expense';
         const typeIcon = transaction.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up';
         
-        // Format date
         const date = new Date(transaction.date);
         const formattedDate = date.toLocaleDateString('en-US', { 
             month: 'short', 
@@ -122,9 +112,7 @@ function renderTransactions() {
     }).join('');
 }
 
-// Render expense breakdown
 function renderExpenseBreakdown() {
-    // Calculate expenses by category
     const expensesByCategory = {};
     let totalExpenses = 0;
     
@@ -140,11 +128,9 @@ function renderExpenseBreakdown() {
         }
     });
     
-    // Render category list
     if (Object.keys(expensesByCategory).length === 0) {
         categoryList.innerHTML = '<li class="no-transactions">No expense data available</li>';
     } else {
-        // Sort categories by amount (highest first)
         const sortedCategories = Object.keys(expensesByCategory).sort(
             (a, b) => expensesByCategory[b] - expensesByCategory[a]
         );
@@ -171,7 +157,6 @@ function renderExpenseBreakdown() {
         }).join('');
     }
     
-    // Render income vs expense chart
     let totalIncome = 0;
     
     transactions.forEach(transaction => {
@@ -188,7 +173,6 @@ function renderExpenseBreakdown() {
     const incomePercentage = Math.round((totalIncome / (totalIncome + totalExpenses)) * 100);
     const expensePercentage = 100 - incomePercentage;
     
-    // Create a simple bar chart with HTML/CSS
     incomeExpenseChart.innerHTML = `
         <div style="width: 100%;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
@@ -215,13 +199,11 @@ function renderExpenseBreakdown() {
     `;
 }
 
-// Add new transaction
 function addTransaction() {
     const description = descriptionInput.value.trim();
     const amount = parseFloat(amountInput.value);
     const category = categorySelect.value;
     
-    // Validate inputs
     if (!description) {
         alert('Please enter a description');
         return;
@@ -237,42 +219,34 @@ function addTransaction() {
         return;
     }
     
-    // Create new transaction
     const newTransaction = {
         id: transactions.length + 1,
         description,
         amount,
         type: transactionType,
         category,
-        date: new Date().toISOString().split('T')[0] // Today's date in YYYY-MM-DD format
+        date: new Date().toISOString().split('T')[0] 
     };
     
-    // Add to transactions array
     transactions.push(newTransaction);
     
-    // Update UI
     updateSummary();
     renderTransactions();
     renderExpenseBreakdown();
     
-    // Reset form
     descriptionInput.value = '';
     amountInput.value = '';
     categorySelect.value = '';
     
-    // Set focus back to description
     descriptionInput.focus();
     
-    // Show success message
     alert('Transaction added successfully!');
 }
 
-// Event Listeners
 incomeBtn.addEventListener('click', () => setActiveType('income'));
 expenseBtn.addEventListener('click', () => setActiveType('expense'));
 addTransactionBtn.addEventListener('click', addTransaction);
 
-// Allow Enter key to add transaction
 descriptionInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') addTransaction();
 });
@@ -281,12 +255,10 @@ amountInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') addTransaction();
 });
 
-// Initialize the app
 function initApp() {
-    updateSummary(); // This will calculate 0 for all values since transactions array is empty
-    renderTransactions(); // This will show "No transactions yet" message
-    renderExpenseBreakdown(); // This will show "No expense data available"
+    updateSummary(); 
+    renderTransactions(); 
+    renderExpenseBreakdown(); 
 }
 
-// Start the app
 initApp();
