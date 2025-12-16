@@ -1,4 +1,3 @@
-// Transaction data - STARTING EMPTY (0 TND)
 let transactions = [];
 
 const descriptionInput = document.getElementById('description');
@@ -262,3 +261,4 @@ function initApp() {
 }
 
 initApp();
+
